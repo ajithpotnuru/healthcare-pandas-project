@@ -1,4 +1,8 @@
 # healthcare-pandas-project
+#data cleaning and preprocessing
+import pandas as pd
+df = pd.read_csv(r"C:\Users\user\Downloads\archive\healthcare_dataset.csv")
+print(df.columns)
 import pandas as pd
 df = pd.read_csv(r"C:\Users\user\Downloads\archive\healthcare_dataset.csv")
 df = df.drop_duplicates()
