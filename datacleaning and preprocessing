@@ -1,1 +1,28 @@
+import pandas as pd
+df = pd.read_csv(r"C:\Users\user\Downloads\archive\healthcare_dataset.csv")
+print(df.columns)
 
+import pandas as pd
+df = pd.read_csv(r"C:\Users\user\Downloads\archive\healthcare_dataset.csv")
+df = df.drop_duplicates()
+df.columns = df.columns.str.strip()
+# Safe cleaning for text columns
+if "Disease" in df.columns:
+    df["Disease"] = df["Disease"].astype(str).str.strip()
+# Date columns
+for col in ["Admission_Date", "Discharge_Date"]:
+    if col in df.columns:
+        df[col] = pd.to_datetime(df[col], errors="coerce")
+# Numeric columns
+for col in ["Age", "Cost"]:
+    if col in df.columns:
+        df[col] = df[col].fillna(df[col].median()).clip(lower=0)
+# Fill other text columns
+if "Gender" in df.columns:
+    df["Gender"] = df["Gender"].fillna("Not Available")
+# Derived column
+if "Admission_Date" in df.columns and "Discharge_Date" in df.columns:
+    df["Stay_Days"] = (df["Discharge_Date"] - df["Admission_Date"]).dt.days
+    df["Stay_Days"] = df["Stay_Days"].fillna(0).clip(lower=0)
+print(df.head())
+print(df.info())
